@@ -65,7 +65,7 @@ function ShopContent() {
           </button>
           {categories.map((cat) => (
             <button
-              key={cat.id}
+              key={cat._id}
               className={`filter-option ${category === cat.slug ? 'active' : ''}`}
               onClick={() => setCategory(cat.slug)}
             >

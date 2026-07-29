@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Product = require('../models/Product');
+const authMiddleware = require('../middleware/auth');
+const adminOnly = require('../middleware/adminOnly');
 
 // GET all products with filters
 router.get('/', async (req, res) => {
@@ -42,7 +44,7 @@ router.get('/:slug', async (req, res) => {
 });
 
 // POST create product (admin)
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, adminOnly, async (req, res) => {
   try {
     const product = new Product(req.body);
     await product.save();
@@ -52,20 +54,22 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update product
-router.put('/:id', async (req, res) => {
+// PUT update product (admin)
+router.put('/:id', authMiddleware, adminOnly, async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json(product);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// DELETE product
-router.delete('/:id', async (req, res) => {
+// DELETE product (admin) — soft delete
+router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
   try {
-    await Product.findByIdAndUpdate(req.params.id, { isActive: false });
+    const product = await Product.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true });
+    if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json({ message: 'Product removed' });
   } catch (err) {
     res.status(500).json({ message: err.message });

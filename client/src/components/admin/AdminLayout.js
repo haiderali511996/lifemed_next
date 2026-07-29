@@ -3,6 +3,8 @@
 export default function AdminLayout({ tab, onTabChange, children }) {
   const tabs = [
     { key: 'orders', label: 'Orders' },
+    { key: 'products', label: 'Products' },
+    { key: 'categories', label: 'Categories' },
     { key: 'users', label: 'Users' },
   ];
 
