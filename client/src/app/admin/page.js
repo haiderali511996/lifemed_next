@@ -36,6 +36,7 @@ export default function AdminPage() {
   const [productsLoading, setProductsLoading] = useState(true);
   const [productsError, setProductsError] = useState(false);
   const [productForm, setProductForm] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
@@ -159,6 +160,29 @@ export default function AdminPage() {
     isActive: p.isActive !== false,
     tags: (p.tags || []).join(', '),
   });
+
+  const handleImageFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await api.post('/upload', formData);
+      const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+      const fullUrl = `${apiOrigin}${res.data.url}`;
+      setProductForm((prev) => ({
+        ...prev,
+        images: prev.images ? `${prev.images}, ${fullUrl}` : fullUrl,
+      }));
+      toast.success('Image uploaded.');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to upload image.');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const saveProduct = async (e) => {
     e.preventDefault();
@@ -369,8 +393,25 @@ export default function AdminPage() {
                 <input value={productForm.manufacturer} onChange={(e) => setProductForm({ ...productForm, manufacturer: e.target.value })} />
               </div>
               <div className="form-group">
-                <label>Image URLs (comma-separated)</label>
-                <input value={productForm.images} onChange={(e) => setProductForm({ ...productForm, images: e.target.value })} />
+                <label>Images</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                  <label className="btn btn-outline btn-sm" style={{ cursor: uploadingImage ? 'not-allowed' : 'pointer', opacity: uploadingImage ? 0.6 : 1 }}>
+                    {uploadingImage ? 'Uploading…' : 'Choose Image'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      disabled={uploadingImage}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Uploads to the server and adds the URL below.</span>
+                </div>
+                <input
+                  placeholder="Image URLs (comma-separated) — or paste external URLs here"
+                  value={productForm.images}
+                  onChange={(e) => setProductForm({ ...productForm, images: e.target.value })}
+                />
               </div>
               <div className="form-group">
                 <label>Tags (comma-separated)</label>
