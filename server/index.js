@@ -33,7 +33,11 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://clausiva2025_db_user:G8ZOWqiPoR2j9lmS@cluster0.dnhpyxp.mongodb.net/lifemed_pharma', {
+if (!process.env.MONGODB_URI) {
+  throw new Error('MONGODB_URI environment variable is required');
+}
+
+mongoose.connect(process.env.MONGODB_URI, {
     serverSelectionTimeoutMS: 30000,
     socketTimeoutMS: 45000,
   })
