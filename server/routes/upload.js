@@ -31,7 +31,11 @@ router.post('/', authMiddleware, adminOnly, (req, res) => {
   upload.single('image')(req, res, (err) => {
     if (err) return res.status(400).json({ message: err.message });
     if (!req.file) return res.status(400).json({ message: 'No image file provided' });
-    res.status(201).json({ url: `/uploads/${req.file.filename}` });
+    // Return an absolute URL too: images are served by this API host, but the
+    // admin UI runs on the storefront host, so a relative path would 404 there.
+    const base = (process.env.PUBLIC_API_URL || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
+    const relativeUrl = `/uploads/${req.file.filename}`;
+    res.status(201).json({ url: relativeUrl, absoluteUrl: `${base}${relativeUrl}` });
   });
 });
 

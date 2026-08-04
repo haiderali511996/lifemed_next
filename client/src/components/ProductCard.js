@@ -1,14 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { FiPackage } from 'react-icons/fi';
 import { useCart } from '@/context/CartContext';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const [imageFailed, setImageFailed] = useState(false);
   const hasSale = product.salePrice != null && product.salePrice < product.price;
   const displayPrice = hasSale ? product.salePrice : product.price;
-  const image = product.images?.[0];
+  const rawImage = product.images?.[0];
+  const image = imageFailed ? null : rawImage;
 
   const handleAdd = () => {
     addToCart({
@@ -24,7 +27,7 @@ export default function ProductCard({ product }) {
       <Link href={`/product/${product._id}`} className="product-thumb">
         {hasSale && <span className="sale-badge">SALE</span>}
         {image ? (
-          <img src={image} alt={product.name} />
+          <img src={image} alt={product.name} onError={() => setImageFailed(true)} />
         ) : (
           <FiPackage className="placeholder-icon" />
         )}

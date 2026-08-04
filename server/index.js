@@ -9,6 +9,11 @@ const path = require('path');
 
 const app = express();
 
+// Running behind cPanel/Passenger, so req.protocol must come from
+// X-Forwarded-Proto or generated absolute URLs would say http:// on an
+// https:// site and get blocked as mixed content.
+app.set('trust proxy', true);
+
 // Middleware
 app.use(cors());
 app.use(express.json());

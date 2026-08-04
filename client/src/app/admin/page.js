@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/context/AuthContext';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -164,9 +165,16 @@ export default function AdminPage() {
   const uploadImageFile = async (file) => {
     const formData = new FormData();
     formData.append('image', file);
-    const res = await api.post('/upload', formData);
     const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
-    return `${apiOrigin}${res.data.url}`;
+    // Posted straight at the API host rather than through the Next.js /api
+    // rewrite: proxying multipart bodies is an avoidable failure point.
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const res = await axios.post(`${apiOrigin}/api/upload`, formData, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    const url = res.data?.absoluteUrl || (res.data?.url ? `${apiOrigin}${res.data.url}` : null);
+    if (!url) throw new Error('Upload succeeded but the server returned no image URL.');
+    return url;
   };
 
   const handleImageFileChange = async (e) => {
