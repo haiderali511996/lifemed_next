@@ -2,9 +2,10 @@ import ProductDetailClient from './ProductDetailClient';
 
 // Generate dynamic metadata per product for SEO
 export async function generateMetadata({ params }) {
+  const { id } = await params;
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/products/${params.id}`,
+      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/products/${id}`,
       { next: { revalidate: 3600 } }
     );
     if (res.ok) {
@@ -15,8 +16,8 @@ export async function generateMetadata({ params }) {
         openGraph: {
           title: `${product.name} | Lifemed Pharma`,
           description: product.shortDescription || product.description?.slice(0, 160),
-          images: [{ url: product.images?.[0] || product.image || '/og-image.jpg' }],
-          url: `https://lifemedpharmaceutical.com/product/${params.id}`,
+          images: [{ url: product.images?.[0] || product.image || '/logo.jpeg' }],
+          url: `https://lifemedpharmaceutical.com/product/${id}`,
         },
       };
     }
@@ -27,6 +28,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function ProductPage({ params }) {
-  return <ProductDetailClient id={params.id} />;
+export default async function ProductPage({ params }) {
+  const { id } = await params;
+  return <ProductDetailClient id={id} />;
 }

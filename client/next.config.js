@@ -4,6 +4,13 @@ const path = require('path');
 const nextConfig = {
   output: 'standalone',
   outputFileTracingRoot: path.join(__dirname),
+  experimental: {
+    // Shared cPanel hosting caps the account's process count (CloudLinux LVE);
+    // spawning multiple build worker processes can hit that cap and fail with
+    // "spawn ... EAGAIN". Use one in-process worker thread instead.
+    cpus: 1,
+    workerThreads: true,
+  },
   images: {
     domains: ['images.unsplash.com', 'via.placeholder.com'],
   },
