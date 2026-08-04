@@ -1,0 +1,9 @@
+User-Agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /order-success/
+Disallow: /cart/
+
+Host: https://lifemedpharmaceutical.com
+Sitemap: https://lifemedpharmaceutical.com/sitemap.xml
