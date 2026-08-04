@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FiShoppingCart, FiMenu, FiX, FiUser, FiSearch } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
@@ -32,8 +33,7 @@ export default function Header() {
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="logo" onClick={() => setMenuOpen(false)}>
-          <span className="logo-mark">L</span>
-          <span className="logo-text">Lifemed Pharma</span>
+          <Image src="/logo.jpeg" alt="Lifemed Pharma" width={240} height={120} className="logo-img" priority />
         </Link>
 
         <nav className={`main-nav ${menuOpen ? 'open' : ''}`}>

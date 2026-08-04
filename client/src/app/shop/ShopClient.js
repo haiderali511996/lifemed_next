@@ -69,7 +69,12 @@ function ShopContent() {
               className={`filter-option ${category === cat.slug ? 'active' : ''}`}
               onClick={() => setCategory(cat.slug)}
             >
-              {cat.icon} {cat.name}
+              {cat.icon?.startsWith('http') || cat.icon?.startsWith('/uploads') ? (
+                <img src={cat.icon} alt="" className="filter-option-icon-img" />
+              ) : (
+                cat.icon
+              )}{' '}
+              {cat.name}
             </button>
           ))}
         </aside>

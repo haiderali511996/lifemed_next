@@ -66,7 +66,11 @@ export default function HomeClient() {
           <div className="category-grid">
             {categories.map((cat) => (
               <Link key={cat._id} href={`/shop?category=${cat.slug}`} className="category-card">
-                <span className="category-icon">{cat.icon}</span>
+                {cat.icon?.startsWith('http') || cat.icon?.startsWith('/uploads') ? (
+                  <img src={cat.icon} alt={cat.name} className="category-icon-img" />
+                ) : (
+                  <span className="category-icon">{cat.icon}</span>
+                )}
                 <h3>{cat.name}</h3>
               </Link>
             ))}

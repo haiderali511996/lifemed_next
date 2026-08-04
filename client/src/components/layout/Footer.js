@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiPhone, FiMail, FiMapPin } from 'react-icons/fi';
 
 export default function Footer() {
@@ -9,8 +10,7 @@ export default function Footer() {
       <div className="container footer-grid">
         <div className="footer-col">
           <div className="logo footer-logo">
-            <span className="logo-mark">L</span>
-            <span className="logo-text">Lifemed Pharma</span>
+            <Image src="/logo.jpeg" alt="Lifemed Pharma" width={240} height={120} className="logo-img footer-logo-img" />
           </div>
           <p>Pakistan&apos;s trusted online pharmacy — quality medicines, supplements and skincare delivered to your door.</p>
         </div>

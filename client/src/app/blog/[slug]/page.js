@@ -1,9 +1,10 @@
 import BlogDetailClient from './BlogDetailClient';
 
 export async function generateMetadata({ params }) {
+  const { slug } = await params;
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/blogs/${params.slug}`,
+      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/blogs/${slug}`,
       { next: { revalidate: 3600 } }
     );
     if (res.ok) {
@@ -17,8 +18,8 @@ export async function generateMetadata({ params }) {
           type: 'article',
           title: blog.title,
           description: blog.excerpt,
-          images: [{ url: blog.image || '/og-image.jpg' }],
-          url: `https://lifemedpharmaceutical.com/blog/${params.slug}`,
+          images: [{ url: blog.image || '/logo.jpeg' }],
+          url: `https://lifemedpharmaceutical.com/blog/${slug}`,
           publishedTime: blog.createdAt,
           authors: [blog.author],
           tags: blog.tags,
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }) {
           card: 'summary_large_image',
           title: blog.title,
           description: blog.excerpt,
-          images: [blog.image || '/og-image.jpg'],
+          images: [blog.image || '/logo.jpeg'],
         },
       };
     }
@@ -53,6 +54,7 @@ export async function generateStaticParams() {
   return [];
 }
 
-export default function BlogDetailPage({ params }) {
-  return <BlogDetailClient slug={params.slug} />;
+export default async function BlogDetailPage({ params }) {
+  const { slug } = await params;
+  return <BlogDetailClient slug={slug} />;
 }

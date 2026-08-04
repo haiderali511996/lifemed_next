@@ -28,13 +28,13 @@ export const metadata = {
     siteName: 'Lifemed Pharma',
     title: 'Lifemed Pharma — Better Health. Better Life.',
     description: 'Pakistan\'s trusted online pharmacy. Quality medicines and health products delivered to your door.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Lifemed Pharma' }],
+    images: [{ url: '/logo.jpeg', width: 1200, height: 630, alt: 'Lifemed Pharma' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Lifemed Pharma — Better Health. Better Life.',
     description: 'Pakistan\'s trusted online pharmacy. Quality medicines and health products delivered to your door.',
-    images: ['/og-image.jpg'],
+    images: ['/logo.jpeg'],
   },
   robots: {
     index: true,
